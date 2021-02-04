@@ -9,7 +9,7 @@ console.log('os.hostname',os.hostname());
 let commonData=''
 subject.subscribe(val=>{
     const io=new ws.Server({
-        host:'8.131.57.124',
+        host:'127.0.0.1',
         port:port,
     })
     console.log(`listening at ${port}`);
