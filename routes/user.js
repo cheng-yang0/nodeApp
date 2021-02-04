@@ -45,7 +45,7 @@ router.post('/login', async (req, res)=>{
 	if(userFindByName.length===0){
 		res.send({
 			status:'failed',
-			message:'账号或密码不对'
+			message:'账号或密码不对',
 		})
 	}else if(userFindByName[0].password===password){
 		const token='Bearer'+jwt.sign(

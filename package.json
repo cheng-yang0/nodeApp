@@ -13,7 +13,8 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "lodash": "^4.17.20",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "rxjs": "^6.6.3"
   },
   "devDependencies": {
     "mongoose": "^5.11.13",
