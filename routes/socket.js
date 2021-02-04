@@ -2,14 +2,11 @@ const {Subject}=require('rxjs')
 const subject=new Subject()
 const sendSubject=new Subject()
 const ws=require('ws')
-const os=require('os')
 let port=3001
-console.log('os.hostname',os.hostname());
 //新页面一开始就能得到数据
 let commonData=''
 subject.subscribe(val=>{
     const io=new ws.Server({
-        host:'127.0.0.1',
         port:port,
     })
     console.log(`listening at ${port}`);
