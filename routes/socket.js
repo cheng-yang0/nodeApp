@@ -1,51 +1,56 @@
 const {Subject}=require('rxjs')
-const subject=new Subject()
-const sendSubject=new Subject()
 const ws=require('ws')
+//port需要暴露出来给下面的router使用
 let port=3001
-//新页面一开始就能得到数据
 let commonData=''
-subject.subscribe(val=>{
+let onlineNumber=0
+const sendSubject=new Subject()
+const connectSubject=new Subject()
+connectSubject.subscribe(val=>{
     const io=new ws.Server({
         port:port,
     })
-    console.log(`listening at ${port}`);
+    console.log(io.on);
+    
     io.on("connection", (wsObj)=>{
-        console.log(`connect in ${port}`);
-        wsObj.send(commonData)
-        if(port>4000){
+        onlineNumber++
+        sendSubject.subscribe(data=>{
+            wsObj.send(JSON.stringify(data))
+        })
+        sendSubject.next({
+            text:commonData,
+            onlineNumber,
+        })
+        wsObj.on('message',(data)=>{
+            commonData=data
+            sendSubject.next({
+                text:data,
+                onlineNumber,
+            })
+        })
+        wsObj.on('close',()=>{
+            onlineNumber--
+            sendSubject.next({
+                text:commonData,
+                onlineNumber,
+            })
+        })
+        if(port>65000){
             port=3001
         }else{
             port++
         }
-        subject.next(port)
-        wsObj.on('message',(data)=>{
-            console.log(data);
-            commonData=data
-            sendSubject.subscribe(data=>{
-                wsObj.send(data)
-            })
-            sendSubject.next(data)
-        })
-    });      
+        connectSubject.next(port)
+    })
 })
-subject.next(port)
+connectSubject.next(3001)
 
 //路由相关
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 router.get('/', function(req, res, next) {
     res.send({
         port:port
     })
 });
-module.exports = router;
-
-
-// wsObj.on("close", function() {
-//     // console.log("request close");
-// });
-
-// wsObj.on("error", function(err) {
-//     // console.log("request error", err);
-// });
+module.exports = router
