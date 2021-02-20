@@ -12,7 +12,7 @@ connectSubject.subscribe(port=>{
         const date=new Date().toLocaleString('chinese',{hour12:false})
         //客户端第一次进来
         wsObj.send(JSON.stringify({
-            text:'欢迎你进入聊天室',
+            text:'一起来匿名聊天吧',
             onlineNumber,
             date,
             port:'系统',
