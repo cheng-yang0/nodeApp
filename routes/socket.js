@@ -15,13 +15,13 @@ connectSubject.subscribe(val=>{
     io.on("connection", (wsObj)=>{
         onlineNumber++
         const date=new Date().toLocaleString('chinese',{hour12:false})
-        sendSubject.subscribe(data=>{
-            wsObj.send(JSON.stringify(data))
-        })
-        sendSubject.next({
+        wsObj.send(JSON.stringify({
             text:commonData,
             onlineNumber,
             date,
+        }))
+        sendSubject.subscribe(data=>{
+            wsObj.send(JSON.stringify(data))
         })
         wsObj.on('message',(data)=>{
             commonData=data
