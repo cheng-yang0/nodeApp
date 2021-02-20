@@ -45,7 +45,7 @@ connectSubject.subscribe(port=>{
 //初始化端口和在线人数
 const firstPort=3001
 let port=firstPort
-let onlineNumber=0
+let onlineNumber=0;
 
 //路由相关
 const express = require('express')
