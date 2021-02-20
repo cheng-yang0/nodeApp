@@ -23,6 +23,7 @@ connectSubject.subscribe(val=>{
         sendSubject.subscribe(data=>{
             wsObj.send(JSON.stringify(data))
         })
+        sendSubject.next({onlineNumber})
         wsObj.on('message',(data)=>{
             commonData=data
             sendSubject.next({
