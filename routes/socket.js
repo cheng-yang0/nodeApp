@@ -1,5 +1,13 @@
 const {Subject}=require('rxjs')
 const ws=require('ws')
+const mongoose=require('../mongoose.js');
+const MessageSchema=new mongoose.Schema({
+	text:String,
+    onlineNumber:String,
+    date:String,
+    port:String,
+})
+const Message=new mongoose.model('message',MessageSchema)
 const sendSubject=new Subject()
 const connectSubject=new Subject()
 //后端监听端口以连接客户端发来的websocket请求
@@ -7,17 +15,12 @@ connectSubject.subscribe(port=>{
     const io=new ws.Server({
         port:port,
     })
-    io.on("connection", (wsObj)=>{
+    io.on("connection", async (wsObj)=>{
         onlineNumber++
         const date=new Date().toLocaleString('chinese',{hour12:false})
         //客户端第一次进来
-        wsObj.send(JSON.stringify({
-            text:'一起来匿名聊天吧',
-            onlineNumber,
-            date,
-            port:'系统',
-        }))
- 
+        const historyMessages=await Message.find()
+        wsObj.send(JSON.stringify(historyMessages))
         sendSubject.subscribe(data=>{
             wsObj.send(JSON.stringify(data))
         })
@@ -26,12 +29,17 @@ connectSubject.subscribe(port=>{
 
         wsObj.on('message',(text)=>{
             //消息的改变
-            sendSubject.next({
+            const messageObj={
                 text,
                 onlineNumber,
                 date,
                 port,
+            }
+            const message=new Message(messageObj)
+            message.save((err,newMessage)=>{
+
             })
+            sendSubject.next(messageObj)
         })
         wsObj.on('close',()=>{
             onlineNumber--
@@ -48,7 +56,8 @@ let port=firstPort
 let onlineNumber=0
 
 //路由相关
-const express = require('express')
+const express = require('express');
+const { stringify } = require('qs');
 const router = express.Router()
 router.get('/', function(req, res, next) {
     connectSubject.next(port);
