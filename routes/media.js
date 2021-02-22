@@ -25,7 +25,7 @@ router.post('/', async (req, res)=>{
             res.send({data:`http://${ip}:3000/${originalFilename}`})
             
         } catch (err) {
-            res.send({ err: "上传失败！" });
+            res.send({ err: "上传失败！" })
         };
     })
 });
