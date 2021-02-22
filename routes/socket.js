@@ -1,8 +1,13 @@
 const {Subject}=require('rxjs')
 const ws=require('ws')
 const mongoose=require('../mongoose.js');
+const fs=require('fs')
+// const Grid=require('gridfs-stream')
+// Grid.mongo=mongoose.mongo
+const connection=mongoose.connection
 const MessageSchema=new mongoose.Schema({
-	text:String,
+    text:String,
+    // file:File,
     onlineNumber:String,
     date:String,
     port:String,
@@ -29,16 +34,16 @@ connectSubject.subscribe(port=>{
 
         wsObj.on('message',(text)=>{
             //消息的改变
+            console.log(text);
             const messageObj={
                 text,
+                // file:data.file,
                 onlineNumber,
                 date,
                 port,
             }
             const message=new Message(messageObj)
-            message.save((err,newMessage)=>{
-
-            })
+            message.save((err,newMessage)=>{})
             sendSubject.next(messageObj)
         })
         wsObj.on('close',()=>{
