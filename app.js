@@ -13,7 +13,7 @@ app.use(express.json({limit: '50mb'}))
 // }).unless({
 //   path:['/user/login','/user/register','/socketPort']
 // }))
-app.use(express.static(path.resolve('..')));
+app.use(express.static(path.resolve('../media')));
 app.use(bodyParser.json());// 添加json解析
 app.use(bodyParser.urlencoded({extended: false}));
 // view engine setup
