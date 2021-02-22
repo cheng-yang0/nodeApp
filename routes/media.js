@@ -14,7 +14,7 @@ const UserSchema=new mongoose.Schema({
 router.post('/', async (req, res)=>{ 
     const form=new multiparty.Form()
     form.encoding = 'utf-8';
-    form.uploadDir=path.resolve('..')
+    form.uploadDir=path.resolve('../media')
     form.parse(req, function (err, fields, files) {
         try {            
             const inputFile = files.file[0];
