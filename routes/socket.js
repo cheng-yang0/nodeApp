@@ -7,10 +7,10 @@ const fs=require('fs')
 const connection=mongoose.connection
 const MessageSchema=new mongoose.Schema({
     text:String,
-    // file:File,
     onlineNumber:String,
     date:String,
     port:String,
+    nickName:String,
 })
 const Message=new mongoose.model('message',MessageSchema)
 const sendSubject=new Subject()
@@ -32,18 +32,19 @@ connectSubject.subscribe(port=>{
         //在线人数的改变
         sendSubject.next({onlineNumber})
 
-        wsObj.on('message',(text)=>{
+        wsObj.on('message',(objText)=>{
             //消息的改变
-            console.log(text);
+            const obj=JSON.parse(objText)
+            const {text,nickName}=obj
             const messageObj={
                 text,
-                // file:data.file,
                 onlineNumber,
                 date,
                 port,
+                nickName,
             }
             const message=new Message(messageObj)
-            message.save((err,newMessage)=>{})
+            message.save((err,newMessage)=>{});
             sendSubject.next(messageObj)
         })
         wsObj.on('close',()=>{
