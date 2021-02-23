@@ -31,21 +31,25 @@ connectSubject.subscribe(port=>{
         })
         //在线人数的改变
         sendSubject.next({onlineNumber})
-
         wsObj.on('message',(objText)=>{
             //消息的改变
             const obj=JSON.parse(objText)
-            const {text,nickName}=obj
-            const messageObj={
-                text,
-                onlineNumber,
-                date,
-                port,
-                nickName,
-            }
-            const message=new Message(messageObj)
-            message.save((err,newMessage)=>{});
-            sendSubject.next(messageObj);
+            const {text,nickName,deleteId}=obj
+            if(deleteId){
+                // 很奇怪，要有下面的这个()=>{}
+                Message.deleteOne({_id:deleteId},()=>{})
+            }else{
+                const messageObj={
+                    text,
+                    onlineNumber,
+                    date,
+                    port,
+                    nickName,
+                }
+                const message=new Message(messageObj)
+                message.save((err,newMessage)=>{})
+                sendSubject.next(message);
+            } 
         })
         wsObj.on('close',()=>{
             onlineNumber--
