@@ -34,10 +34,13 @@ connectSubject.subscribe(port=>{
         wsObj.on('message',(objText)=>{
             //消息的改变
             const obj=JSON.parse(objText)
-            const {text,nickName,deleteId}=obj
+            const {text,nickName,deleteId,deleteIndex}=obj
             if(deleteId){
                 // 很奇怪，要有下面的这个()=>{}
-                Message.deleteOne({_id:deleteId},()=>{})
+                Message.deleteOne({_id:deleteId},()=>{
+                    sendSubject.next({deleteIndex});
+                })
+
             }else{
                 const messageObj={
                     text,
