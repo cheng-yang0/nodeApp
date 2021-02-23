@@ -11,6 +11,7 @@ const UserSchema=new mongoose.Schema({
 	userName:String,
 	password:String
 })
+const localIp=require('../util/ip').ip
 router.post('/', async (req, res)=>{ 
     const form=new multiparty.Form()
     form.encoding = 'utf-8';
@@ -21,7 +22,7 @@ router.post('/', async (req, res)=>{
             const originalFilename=inputFile.originalFilename
             const newPath=path.resolve(`${form.uploadDir}/${inputFile.originalFilename}`)
             fs.renameSync(inputFile.path, newPath);
-            const ip=os.type()=='Linux' ? '8.131.57.124' : 'localhost'
+            const ip=os.type()=='Linux' ? '8.131.57.124' : localIp
             res.send({data:`http://${ip}:3000/${originalFilename}`})
             
         } catch (err) {
