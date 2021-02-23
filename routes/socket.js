@@ -45,7 +45,7 @@ connectSubject.subscribe(port=>{
             }
             const message=new Message(messageObj)
             message.save((err,newMessage)=>{});
-            sendSubject.next(messageObj)
+            sendSubject.next(messageObj);
         })
         wsObj.on('close',()=>{
             onlineNumber--
