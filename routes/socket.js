@@ -37,10 +37,9 @@ connectSubject.subscribe(port=>{
             const {text,nickName,deleteId,deleteIndex}=obj
             if(deleteId){
                 // 很奇怪，要有下面的这个()=>{}
-                Message.deleteOne({_id:deleteId},()=>{
+                Message.updateOne({_id:deleteId},{text:'已被删除'},()=>{
                     sendSubject.next({deleteIndex});
                 })
-
             }else{
                 const messageObj={
                     text,
