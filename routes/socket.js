@@ -11,6 +11,7 @@ const MessageSchema=new mongoose.Schema({
     date:String,
     port:String,
     nickName:String,
+    size:String,
 })
 const Message=new mongoose.model('message',MessageSchema)
 const sendSubject=new Subject()
@@ -34,7 +35,7 @@ connectSubject.subscribe(port=>{
         wsObj.on('message',(objText)=>{
             //消息的改变
             const obj=JSON.parse(objText)
-            const {text,nickName,deleteId,deleteIndex}=obj
+            const {text,nickName,deleteId,deleteIndex,size}=obj;
             if(deleteId){
                 // 很奇怪，要有下面的这个()=>{}
                 Message.updateOne({_id:deleteId},{text:'已被删除'},()=>{
@@ -47,6 +48,7 @@ connectSubject.subscribe(port=>{
                     date,
                     port,
                     nickName,
+                    size,
                 }
                 const message=new Message(messageObj)
                 message.save((err,newMessage)=>{})

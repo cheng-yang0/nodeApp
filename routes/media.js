@@ -22,9 +22,8 @@ router.post('/', async (req, res)=>{
             const originalFilename=inputFile.originalFilename
             const newPath=path.resolve(`${form.uploadDir}/${inputFile.originalFilename}`)
             fs.renameSync(inputFile.path, newPath);
-            const ip=os.type()=='Linux' ? '8.131.57.124' : localIp
-            res.send({data:`http://${ip}:3000/${originalFilename}`})
-            
+            const ip=os.type()=='Linux' ? '8.131.57.124' : 'localhost'
+            res.send({data:`http://${ip}:3000/${originalFilename}`})            
         } catch (err) {
             res.send({ err: "上传失败！" })
         };
